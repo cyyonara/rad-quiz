@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply font-roboto scroll-smooth;
+}
+
+.logo-animated {
+  -webkit-text-stroke: 1px black;
+}
+
+.logo-animated::after {
+  content: "Rad Quiz.";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 0%;
+  height: 100%;
+  overflow: hidden;
+  animation: logo-flow 6s linear infinite;
+  @apply text-cs-dark whitespace-nowrap font-roboto uppercase border-r-[4px] border-cs-dark;
+}
+
+.login-header .active {
+  @apply border border-cs-dark;
+}
+
+@keyframes logo-flow {
+  0% {
+    width: 0%;
+  }
+
+  50% {
+    width: 102%;
+  }
+
+  100% {
+    width: 0%;
+  }
+}
