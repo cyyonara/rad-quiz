@@ -36,7 +36,7 @@ export default function MainHeader() {
           to={"/create"}
           className="flex items-center gap-x-1 py-3 text-white"
         >
-          <span>Create a quiz</span>
+          <span>Create quiz</span>
           <IoAddCircle size={18} />
         </Link>
       </div>

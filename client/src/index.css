@@ -2,8 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --shadow-clr: rgba(0 0 0 0.4);
+}
+
 body {
-  @apply font-roboto scroll-smooth;
+  @apply scroll-smooth font-roboto;
 }
 
 .logo-animated {
@@ -21,7 +25,7 @@ body {
   height: 100%;
   overflow: hidden;
   animation: logo-flow 6s linear infinite;
-  @apply text-cs-dark whitespace-nowrap font-roboto uppercase border-r-[4px] border-cs-dark;
+  @apply whitespace-nowrap border-r-[4px] border-cs-dark font-roboto uppercase text-cs-dark;
 }
 
 .login-header .active {
