@@ -1,8 +1,8 @@
-import useAuth from "../store/useAuth";
+import useAuth from "../../store/useAuth";
 import toast from "react-hot-toast";
 import axios from "axios";
-import A_Error from "../types/t.axios_error";
-import UserCredentials from "../types/t.auth.credentials";
+import A_Error from "../../types/t.axios_error";
+import UserCredentials from "../../types/t.auth.credentials";
 import { useState, FormEvent, ChangeEvent } from "react";
 import { Link } from "react-router-dom";
 

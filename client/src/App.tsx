@@ -1,8 +1,8 @@
 import Login from "./pages/Login";
 import SignUp from "./pages/Signup";
 import Home from "./pages/Home";
-import RootLayout from "./layouts/RootLayout";
-import AuthLayout from "./layouts/AuthLayout";
+import RootLayout from "./shared/layouts/RootLayout";
+import AuthLayout from "./shared/layouts/AuthLayout";
 import { Routes, Route } from "react-router-dom";
 import CreateQuiz from "./pages/CreateQuiz";
 

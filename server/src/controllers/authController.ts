@@ -2,11 +2,11 @@ import User from "../models/User";
 import handler from "express-async-handler";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import { LoginFormData, SignUpFormdata } from "../types/t.auth";
+import { LoginFormData, SignupFormdata } from "../types/t.auth";
 
 // @POST - public - /api/auth/signup
 const signup = handler(async (req: Request, res: Response): Promise<void> => {
-  const { username, password }: SignUpFormdata = req.body;
+  const { username, password }: SignupFormdata = req.body;
 
   if (!username || !password) {
     res.status(400);

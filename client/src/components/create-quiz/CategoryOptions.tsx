@@ -1,4 +1,4 @@
-import useCategories from "../hooks/useCategories";
+import useCategories from "../../hooks/useCategories";
 
 export default function CategoryOptions() {
   const { data: categories, isSuccess } = useCategories();

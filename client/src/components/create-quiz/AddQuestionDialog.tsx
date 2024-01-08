@@ -1,13 +1,14 @@
-import Question from "../types/t.questions";
-import { useRef, useEffect, useState } from "react";
-import { Option } from "../types/t.questions";
+import IQuestion from "../../types/t.question";
+import CreatedChoice from "./CreatedChoice";
+import { useRef, useEffect, useState, ChangeEvent } from "react";
+import { Choice } from "../../types/t.question";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
-import CreatedOption from "./CreatedOption";
+import { v4 as uuid } from "uuid";
 
 interface Props {
   closeDialog: () => void;
-  addQuestion: (question: Question) => void;
+  addQuestion: (question: IQuestion) => void;
 }
 
 const dialog = {
@@ -20,45 +21,70 @@ const dialog = {
 };
 
 function AddQuestionDialog({ closeDialog, addQuestion }: Props) {
-  const [options, setOptions] = useState<Option[]>([]);
-  const [inputOption, setInputOption] = useState<string>("");
+  const [choices, setChoices] = useState<Choice[]>([]);
+  const [inputChoice, setInputChoice] = useState<string>("");
+  const [inputQuestion, setInputQuestion] = useState<string>("");
   const questionRef = useRef<HTMLTextAreaElement | null>(null);
-  const optionsContainerRef = useRef<HTMLDivElement | null>(null);
+  const choicesContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const addNewOption = (e: React.FormEvent): void => {
+  const addNewOption = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputOption) return;
-    const newOption = inputOption.trim();
-    const isOptionExist = options.find(
-      (option) => option.label.toLowerCase() === newOption.toLowerCase(),
-    );
+    if (!inputChoice) return;
 
-    if (!isOptionExist) {
-      setOptions([...options, { label: newOption, isRightAnswer: false }]);
-      setInputOption("");
+    if (choices.length >= 10)
+      return toast.error("Choices exceed the maximum limit");
+
+    const newChoice = inputChoice.trim();
+    const isChoiceExist = choices.find((choice) => choice.label === newChoice);
+
+    if (!isChoiceExist) {
+      setChoices([...choices, { label: newChoice, isRightAnswer: false }]);
+      setInputChoice("");
+
+      setTimeout(() => {
+        choicesContainerRef.current!.scrollTo(
+          0,
+          choicesContainerRef.current!.scrollHeight,
+        );
+      }, 10);
     } else {
       toast.error("Choice already exist. Please enter a new one");
     }
   };
 
-  const handleUpdateOption = (label: string) => {
-    setOptions((prev) =>
-      prev.map((option) => {
-        if (option.label.toLowerCase() === label.toLowerCase()) {
-          return { ...option, isRightAnswer: !option.isRightAnswer };
+  const handleUpdate = (label: string): void => {
+    setChoices((prev) =>
+      prev.map((choice) => {
+        if (choice.label === label) {
+          return { ...choice, isRightAnswer: !choice.isRightAnswer };
         } else {
-          return { ...option, isRightAnswer: false };
+          return { ...choice, isRightAnswer: false };
         }
       }),
     );
   };
 
-  useEffect(() => {
-    optionsContainerRef.current!.scrollTo(
-      0,
-      optionsContainerRef.current!.scrollHeight,
-    );
-  }, [options]);
+  const handleDelete = (label: string): void => {
+    setChoices((prev) => prev.filter((choice) => choice.label !== label));
+  };
+
+  const handleAddQuestion = () => {
+    if (!inputQuestion || choices.length === 0) {
+      toast.error(
+        "You need to provide a question and choices before you proceed",
+      );
+    } else if (!choices.find((choice) => choice.isRightAnswer)) {
+      toast.error("Please specify the correct answer for this question");
+    } else {
+      addQuestion({
+        questionId: uuid(),
+        question: inputQuestion,
+        choices,
+      });
+      setInputQuestion("");
+      setChoices([]);
+    }
+  };
 
   useEffect(() => {
     document.body.style.overflow = "hidden";
@@ -95,21 +121,25 @@ function AddQuestionDialog({ closeDialog, addQuestion }: Props) {
               cols={20}
               rows={5}
               className="resize-none rounded-md border border-cs-dark p-3 text-sm text-cs-dark outline-none"
+              value={inputQuestion}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                setInputQuestion(e.target.value)
+              }
             ></textarea>
           </div>
           <form onSubmit={addNewOption} className="flex gap-x-3">
             <input
               type="text"
               placeholder="Enter choices..."
-              value={inputOption}
+              value={inputChoice}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setInputOption(e.target.value)
+                setInputChoice(e.target.value)
               }
               className="w-0 flex-1 rounded-md border border-cs-dark px-3 text-sm outline-none placeholder:font-roboto placeholder:text-sm"
             />
             <button
               type="submit"
-              disabled={inputOption === ""}
+              disabled={inputChoice === ""}
               className="rounded-md bg-cs-dark px-3 py-3 text-xs font-bold text-white duration-150 hover:bg-cs-dark/90 active:bg-cs-dark/80 disabled:bg-gray-400"
             >
               Add choice
@@ -117,15 +147,16 @@ function AddQuestionDialog({ closeDialog, addQuestion }: Props) {
           </form>
           <div
             className="flex max-h-[200px] flex-col gap-y-2 overflow-y-auto scroll-smooth"
-            ref={optionsContainerRef}
+            ref={choicesContainerRef}
           >
-            {options.map((option, i) => (
-              <CreatedOption
-                key={option.label}
-                optionNumber={i + 1}
-                label={option.label}
-                isRightAnswer={option.isRightAnswer}
-                handleUpdate={() => handleUpdateOption(option.label)}
+            {choices.map((choice, i) => (
+              <CreatedChoice
+                key={choice.label}
+                choiceNumber={i + 1}
+                label={choice.label}
+                isRightAnswer={choice.isRightAnswer}
+                handleUpdate={() => handleUpdate(choice.label)}
+                handleDelete={() => handleDelete(choice.label)}
               />
             ))}
           </div>
@@ -136,7 +167,11 @@ function AddQuestionDialog({ closeDialog, addQuestion }: Props) {
             >
               Close
             </button>
-            <button className="rounded-md border border-cs-dark bg-white px-3 py-2 text-sm text-cs-dark">
+            <button
+              className="rounded-md border border-cs-dark bg-white px-3 py-2 text-sm text-cs-dark disabled:border-none disabled:bg-gray-300"
+              onClick={handleAddQuestion}
+              disabled={inputQuestion === "" || choices.length === 0}
+            >
               Add question
             </button>
           </div>

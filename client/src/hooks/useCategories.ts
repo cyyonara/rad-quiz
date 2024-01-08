@@ -1,6 +1,6 @@
 import axios from "axios";
 import A_Error from "../types/t.axios_error";
-import Categories from "../types/t.categories";
+import Categories from "../types/t.category";
 import { useQuery, UseQueryResult } from "@tanstack/react-query";
 
 const getCategories = async (): Promise<Categories[]> => {

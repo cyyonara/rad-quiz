@@ -1,4 +1,4 @@
-import QuizSetup from "../components/QuizSetup";
+import QuizSetup from "../components/create-quiz/QuizSetup";
 import useAvatarDropdown from "../store/useAvatarDropdown";
 import { useEffect } from "react";
 

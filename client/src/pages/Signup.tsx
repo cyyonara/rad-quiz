@@ -1,4 +1,4 @@
-import SignupForm from "../components/SignupForm";
+import SignupForm from "../components/signup/SignupForm";
 import useAuth from "../store/useAuth";
 import { useEffect } from "react";
 import { Navigate } from "react-router-dom";

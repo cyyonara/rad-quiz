@@ -1,4 +1,4 @@
-import useAuth from "../store/useAuth";
+import useAuth from "../../store/useAuth";
 
 export default function DefaultAvatar() {
   const { auth } = useAuth();

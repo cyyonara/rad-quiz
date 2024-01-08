@@ -1,6 +1,6 @@
 import * as yup from "yup";
-import useSignup from "../hooks/useSignup";
-import useAuth from "../store/useAuth";
+import useSignup from "../../hooks/useSignup";
+import useAuth from "../../store/useAuth";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";

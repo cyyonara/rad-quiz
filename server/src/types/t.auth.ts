@@ -3,6 +3,6 @@ export interface LoginFormData {
   password: string;
 }
 
-export interface SignUpFormdata extends LoginFormData {
+export interface SignupFormdata extends LoginFormData {
   image: string;
 }

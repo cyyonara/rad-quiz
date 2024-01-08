@@ -1,4 +1,4 @@
-import useAvatarDropdown from "../store/useAvatarDropdown";
+import useAvatarDropdown from "../../store/useAvatarDropdown";
 import SearchInput from "./SearchInput";
 import AvatarDropDownContainer from "./AvatarDropdownContainer";
 import Logo from "./Logo";

@@ -1,8 +1,8 @@
 import clsx from "clsx";
 import DefaultAvatar from "./DefaultAvatar";
 import DropdownNav from "./DropdownNav";
-import useAuth from "../store/useAuth";
-import useAvatarDropdown from "../store/useAvatarDropdown";
+import useAuth from "../../store/useAuth";
+import useAvatarDropdown from "../../store/useAvatarDropdown";
 import { IoIosArrowDown } from "react-icons/io";
 
 export default function AvatarDropDownContainer() {
