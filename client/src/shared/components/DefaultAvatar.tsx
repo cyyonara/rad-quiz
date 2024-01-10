@@ -1,6 +1,7 @@
 import useAuth from "../../store/useAuth";
+import { FC } from "react";
 
-export default function DefaultAvatar() {
+const DefaultAvatar: FC = () => {
   const { auth } = useAuth();
   const usernameChars = auth!.username.split("");
   const initial = usernameChars[0] + usernameChars[1];
@@ -10,4 +11,5 @@ export default function DefaultAvatar() {
       {initial}
     </div>
   );
-}
+};
+export default DefaultAvatar;

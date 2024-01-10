@@ -2,22 +2,22 @@ import { MdError } from "react-icons/md";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 
 export default {
-  className:
-    "bg-white border border-cs-dark rounded-sm text-cs-dark rounded-sm",
+  className: " rounded-sm text-cs-dark rounded-sm",
   style: {
-    borderRadius: "2px",
+    borderRadius: "4px",
+    maxWidth: 1000,
   },
   success: {
     icon: <IoIosCheckmarkCircleOutline />,
-    className: "text-sm border",
-    style: { color: "green", borderColor: "green" },
+    className: "text-sm",
+    style: { color: "green" },
   },
   error: {
     icon: <MdError class="text-2xl" />,
-    className: "text-sm border-red-400 border",
-    style: { color: "red", borderColor: "red" },
+    className: "text-sm border",
+    style: { color: "red" },
   },
   loading: {
-    className: "text-sm border-cs-dark text-cs-dark border",
+    className: "text-sm text-cs-dark",
   },
 };

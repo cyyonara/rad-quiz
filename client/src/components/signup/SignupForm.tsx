@@ -4,6 +4,7 @@ import useAuth from "../../store/useAuth";
 import { useFormik } from "formik";
 import { Link } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { FC } from "react";
 
 interface SignupForm {
   username: string;
@@ -18,7 +19,7 @@ const signupSchema = yup.object().shape({
     .required("This field is required"),
 });
 
-export default function SignupForm() {
+const SignupForm: FC = () => {
   const { setCredentials } = useAuth();
   const { isPending, mutate } = useSignup();
   const { values, handleSubmit, touched, handleBlur, handleChange, errors } =
@@ -96,4 +97,6 @@ export default function SignupForm() {
       </p>
     </form>
   );
-}
+};
+
+export default SignupForm;

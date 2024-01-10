@@ -3,14 +3,14 @@ import { FaGithub } from "react-icons/fa";
 import { FaFacebookF } from "react-icons/fa6";
 import { FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import { JSX } from "react";
+import { FC, JSX } from "react";
 
 interface AccouuntLink {
   path: string;
   component: JSX.Element;
 }
 
-export default function Footer() {
+const Footer: FC = () => {
   const year: number = new Date().getFullYear();
   const accountLinks: AccouuntLink[] = [
     { path: "https://github.com/cyyonara", component: <FaGithub /> },
@@ -53,4 +53,6 @@ export default function Footer() {
       </div>
     </footer>
   );
-}
+};
+
+export default Footer;

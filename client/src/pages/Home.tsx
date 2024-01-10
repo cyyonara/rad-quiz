@@ -1,8 +1,8 @@
 import useAvatarDropdown from "../store/useAvatarDropdown";
-import { useEffect } from "react";
+import { useEffect, FC } from "react";
 
-export default function Home() {
-  const { closeDropdown } = useAvatarDropdown();
+const Home: FC = () => {
+  const closeDropdown = useAvatarDropdown((state) => state.closeDropdown);
 
   useEffect(() => {
     document.title = "Home";
@@ -14,4 +14,6 @@ export default function Home() {
       onClick={closeDropdown}
     ></main>
   );
-}
+};
+
+export default Home;

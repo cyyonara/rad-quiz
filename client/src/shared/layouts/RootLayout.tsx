@@ -1,8 +1,9 @@
 import Footer from "../components/Footer";
 import MainHeader from "../components/MainHeader";
 import { Outlet } from "react-router-dom";
+import { FC } from "react";
 
-function RootLayout() {
+const RootLayout: FC = () => {
   return (
     <>
       <div className="flex min-h-screen flex-col">
@@ -12,6 +13,6 @@ function RootLayout() {
       <Footer />
     </>
   );
-}
+};
 
 export default RootLayout;

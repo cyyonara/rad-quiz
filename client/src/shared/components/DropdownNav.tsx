@@ -3,9 +3,9 @@ import { HiOutlineUserCircle } from "react-icons/hi";
 import { Link } from "react-router-dom";
 import { IoIosLogOut } from "react-icons/io";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, FC } from "react";
 
-export default function DropdownNav() {
+const DropdownNav: FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   return (
@@ -60,4 +60,6 @@ export default function DropdownNav() {
       </div>
     </div>
   );
-}
+};
+
+export default DropdownNav;

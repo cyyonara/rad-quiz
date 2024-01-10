@@ -1,9 +1,9 @@
 import SignupForm from "../components/signup/SignupForm";
 import useAuth from "../store/useAuth";
-import { useEffect } from "react";
+import { useEffect, FC } from "react";
 import { Navigate } from "react-router-dom";
 
-export default function Signup() {
+const Signup: FC = () => {
   const { auth } = useAuth();
 
   useEffect(() => {
@@ -22,4 +22,6 @@ export default function Signup() {
       </div>
     </main>
   );
-}
+};
+
+export default Signup;

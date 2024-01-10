@@ -1,8 +1,9 @@
 import useCategories from "../../hooks/useCategories";
 import { Link } from "react-router-dom";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { FC } from "react";
 
-export default function CategoriesPopup() {
+const CategoriesPopup: FC = () => {
   const { data: categories, isLoading, isError, refetch } = useCategories();
 
   if (isLoading) {
@@ -47,4 +48,6 @@ export default function CategoriesPopup() {
       </div>
     </div>
   );
-}
+};
+
+export default CategoriesPopup;

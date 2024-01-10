@@ -1,63 +1,100 @@
 import toast from "react-hot-toast";
-import IQuestion from "../../types/t.question";
+import IQuestion, { Option } from "../../types/t.question";
 import CoverPhotoSetup from "./CoverPhotoSetup";
-import CategoryOptions from "./CategoryOptions";
 import QuestionList from "./QuestionList";
 import AddQuestionDialog from "./AddQuestionDialog";
-import { useState, createContext } from "react";
+import QuizDetailsForm from "./QuizDetailsForm";
+import ToastAlert from "./ToastAlert";
+import { useCallback, useState, createContext, ChangeEvent, FC } from "react";
 import { GrAdd } from "react-icons/gr";
 import { AnimatePresence } from "framer-motion";
 import { IoCloseOutline } from "react-icons/io5";
-import { IoIosArrowDown } from "react-icons/io";
 
 const questionDummy: IQuestion = {
   questionId: "sdfsdfsdf",
   question: "Who is the father of John Cena?",
-  choices: [{ label: "Triple H", isRightAnswer: false }],
+  options: [
+    { label: "Triple H", isRightAnswer: false },
+    { label: "Cm Punk", isRightAnswer: false },
+    { label: "Jan", isRightAnswer: true },
+  ],
 };
 
-// { label: "Cm Punk", isRightAnswer: false }, { label: "Jan", isRightAnswer: true },],
-
 interface IQuestionContext {
+  deleteQuestion: (quesitonId: string) => void;
   updateCorrectAnswer: (questionId: string, label: string) => void;
-  deleteChoices: (questionId: string, label: string) => void;
+  deleteOptions: (questionId: string, label: string) => void;
 }
 
+interface IQuizDetails {
+  title: string;
+  description: string;
+  category: string;
+}
+
+export type TQuizFormEvent =
+  | ChangeEvent<HTMLInputElement>
+  | ChangeEvent<HTMLSelectElement>
+  | ChangeEvent<HTMLTextAreaElement>;
+
 export const QuestionContext = createContext<IQuestionContext>({
+  deleteQuestion: () => {},
   updateCorrectAnswer: () => {},
-  deleteChoices: () => {},
+  deleteOptions: () => {},
 });
 
-function QuizSetup() {
+const formInitialState: IQuizDetails = {
+  title: "",
+  description: "",
+  category: "",
+};
+
+const QuizSetup: FC = () => {
   const [quizCoverLink, setQuizCoverLink] = useState<string>("");
   const [quizCoverFile, setQuizCoverFile] = useState<File | null>(null);
   const [questions, setQuestions] = useState<IQuestion[]>([questionDummy]);
+  const [quizDetails, setQuizDetails] =
+    useState<IQuizDetails>(formInitialState);
   const [showAddQuestionDialog, setShowAddQuestionDialog] =
     useState<boolean>(false);
 
-  const setCoverPhoto = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    if (e.target.files && e.target.files[0]) {
-      const imageFile = e.target.files[0];
-      const fileExt = imageFile.name.split(".");
-      const actualFileExt = fileExt[fileExt.length - 1].toLowerCase();
-      const acceptedFileExt = ["png", "jpg", "jpeg"];
-      if (acceptedFileExt.find((ext) => ext === actualFileExt)) {
-        const tempUrl = URL.createObjectURL(imageFile);
-        setQuizCoverLink(tempUrl);
-        setQuizCoverFile(imageFile);
-      } else {
-        toast.error("You must select an image file");
-      }
-    }
-  };
+  const handleChangeDetails = useCallback((e: TQuizFormEvent) => {
+    setQuizDetails((state) => ({ ...state, [e.target.id]: e.target.value }));
+  }, []);
 
-  const removePhoto = (): void => {
+  const setCoverPhoto = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files && e.target.files[0]) {
+        const imageFile: File = e.target.files[0];
+        const fileExt: Array<string> = imageFile.name.split(".");
+        const actualFileExt: string = fileExt[fileExt.length - 1].toLowerCase();
+        const acceptedFileExt: Array<string> = ["png", "jpg", "jpeg"];
+
+        if (acceptedFileExt.find((ext) => ext === actualFileExt)) {
+          const tempUrl: string = URL.createObjectURL(imageFile);
+          setQuizCoverLink(tempUrl);
+          setQuizCoverFile(imageFile);
+        } else {
+          toast.error("You must select an image file");
+        }
+      }
+    },
+    [],
+  );
+
+  const removePhoto = () => {
     setQuizCoverLink("");
     setQuizCoverFile(null);
   };
 
-  const addQuestion = (question: IQuestion): void => {
+  const addQuestion = (question: IQuestion) => {
     setQuestions([...questions, question]);
+  };
+
+  const deleteQuestion = (quesitonId: string) => {
+    setQuestions((state) =>
+      state.filter((question) => question.questionId !== quesitonId),
+    );
   };
 
   const updateCorrectAnswer = (questionId: string, label: string) => {
@@ -66,11 +103,11 @@ function QuizSetup() {
         if (question.questionId === questionId) {
           return {
             ...question,
-            choices: question.choices.map((choice) => {
-              if (choice.label === label) {
-                return { ...choice, isRightAnswer: true };
+            options: question.options.map((option) => {
+              if (option.label === label) {
+                return { ...option, isRightAnswer: true };
               }
-              return { ...choice, isRightAnswer: false };
+              return { ...option, isRightAnswer: false };
             }),
           };
         }
@@ -79,15 +116,62 @@ function QuizSetup() {
     );
   };
 
-  const deleteChoices = (questionId: string, label: string) => {
+  const deleteOptions = (questionId: string, label: string) => {
     const question = questions.find(
       (question) => question.questionId === questionId,
-    );
+    ) as IQuestion;
 
-    if (question?.choices.length === 1) {
+    if (question!.options.length === 1) {
       setQuestions((state) =>
         state.filter((question) => question.questionId !== questionId),
       );
+    } else {
+      const selectedOption = question.options.find(
+        (option) => option.label === label,
+      ) as Option;
+
+      if (selectedOption.isRightAnswer) {
+        const filteredOptions = question!.options.filter(
+          (option) => option.label !== label && !option.isRightAnswer,
+        );
+        filteredOptions[0].isRightAnswer = true;
+        setQuestions((state) =>
+          state.map((question) => {
+            if (question.questionId === questionId) {
+              return { ...question, options: filteredOptions };
+            }
+            return question;
+          }),
+        );
+      } else {
+        setQuestions((state) =>
+          state.map((question) => {
+            if (question.questionId === questionId) {
+              return {
+                ...question,
+                options: question.options.filter(
+                  (option) => option.label !== label,
+                ),
+              };
+            }
+            return question;
+          }),
+        );
+      }
+    }
+  };
+
+  const uploadQuiz = () => {
+    if (
+      !quizDetails.title ||
+      !quizDetails.description ||
+      !quizDetails.category
+    ) {
+      toast(
+        <ToastAlert message="Please complete the details of your quiz to continue" />,
+      );
+    } else {
+      console.log("Hi");
     }
   };
 
@@ -123,75 +207,34 @@ function QuizSetup() {
         </AnimatePresence>
         <div className="flex flex-1 flex-col gap-y-6">
           <div className="flex items-center gap-x-6">
-            <h1 className="text-3xl font-extrabold uppercase text-cs-dark">
-              Create your quiz
+            <h1 className="font text-3xl font-black uppercase text-cs-dark">
+              Create your own quiz
             </h1>
             <span className="h-[1px] flex-1 bg-gray-400"></span>
           </div>
-          <div className="flex gap-x-[5%]">
-            <div className="flex flex-[1.5] flex-col gap-y-6">
-              <div className="flex flex-col gap-y-1 ">
-                <label
-                  htmlFor="title"
-                  className="text-sm after:ml-1 after:text-red-600 after:content-['*']"
-                >
-                  Title
-                </label>
-                <input
-                  type="text"
-                  id="title"
-                  className="rounded-md border border-cs-dark px-4 py-3 text-sm text-cs-dark outline-none"
-                />
-              </div>
-              <div className="flex flex-col gap-y-1 ">
-                <label
-                  htmlFor="description"
-                  className="text-sm after:ml-1 after:text-red-600 after:content-['*']"
-                >
-                  Description
-                </label>
-                <textarea
-                  id="description"
-                  cols={30}
-                  rows={8}
-                  className="resize-none rounded-md border border-cs-dark px-4 py-3 text-sm text-cs-dark outline-none"
-                ></textarea>
-              </div>
-            </div>
-            <div className="flex flex-1 flex-col gap-y-6">
-              <div className="flex flex-col gap-y-1">
-                <label
-                  htmlFor="categories"
-                  className="text-sm after:ml-1 after:text-red-600 after:content-['*']"
-                >
-                  Category
-                </label>
-                <div className="relative flex w-full items-center">
-                  <select
-                    id="category"
-                    className="w-full cursor-pointer appearance-none rounded-md border border-cs-dark p-3 text-sm text-cs-dark outline-none"
-                  >
-                    <option value="">-- Select category --</option>
-                    <CategoryOptions />
-                  </select>
-                  <IoIosArrowDown className="absolute right-3 top-[50%] -translate-y-[50%]" />
-                </div>
-              </div>
-            </div>
-          </div>
+          <QuizDetailsForm
+            title={quizDetails.title}
+            description={quizDetails.description}
+            category={quizDetails.category}
+            handleChangeDetails={handleChangeDetails}
+          />
           <QuestionContext.Provider
-            value={{ deleteChoices, updateCorrectAnswer }}
+            value={{ deleteQuestion, updateCorrectAnswer, deleteOptions }}
           >
             {questions.length > 0 && <QuestionList questions={questions} />}
           </QuestionContext.Provider>
-          <button className="self-start rounded-md bg-green-600 px-5 py-2 font-bold text-white">
+          <button
+            onClick={uploadQuiz}
+            disabled={questions.length === 0}
+            className="mt-4 rounded-md bg-green-600 px-5 py-2 font-semibold text-white disabled:cursor-not-allowed"
+          >
             Upload Quiz
           </button>
         </div>
-        <div className="flex h-min w-[250px] flex-col gap-y-4">
+        <div className="sticky top-[20px] flex h-min w-[250px] flex-col gap-y-4">
           <button
             onClick={() => setShowAddQuestionDialog(true)}
-            className="flex items-center justify-center gap-x-2 rounded-md bg-green-600 px-4 py-3 text-sm font-bold uppercase text-white duration-150 hover:bg-green-500 active:bg-green-400"
+            className="flex items-center justify-center gap-x-2 rounded-md bg-cs-dark px-4 py-3 text-sm font-bold uppercase text-white duration-150 hover:bg-cs-dark/90 active:bg-cs-dark/80"
           >
             <GrAdd color="white" />
             <span>Add question</span>
@@ -200,6 +243,6 @@ function QuizSetup() {
       </div>
     </>
   );
-}
+};
 
 export default QuizSetup;

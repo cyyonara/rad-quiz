@@ -6,8 +6,9 @@ import CategoriesPopup from "./CategoriesPopup";
 import { Link } from "react-router-dom";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoAddCircle } from "react-icons/io5";
+import { FC } from "react";
 
-export default function MainHeader() {
+const MainHeader: FC = () => {
   const { closeDropdown } = useAvatarDropdown();
 
   return (
@@ -42,4 +43,6 @@ export default function MainHeader() {
       </div>
     </header>
   );
-}
+};
+
+export default MainHeader;

@@ -1,7 +1,8 @@
 import Logo from "./Logo";
 import { NavLink } from "react-router-dom";
+import { FC } from "react";
 
-export default function LoginHeader() {
+const LoginHeader: FC = () => {
   return (
     <header className="login-header flex justify-between gap-x-4 border-b bg-white px-4 py-5 text-cs-dark sm:px-[clamp(2rem,8vw,300px)]">
       <Logo path={"/"} />
@@ -15,4 +16,6 @@ export default function LoginHeader() {
       </div>
     </header>
   );
-}
+};
+
+export default LoginHeader;

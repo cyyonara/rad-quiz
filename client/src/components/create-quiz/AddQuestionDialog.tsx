@@ -1,88 +1,92 @@
 import IQuestion from "../../types/t.question";
-import CreatedChoice from "./CreatedChoice";
-import { useRef, useEffect, useState, ChangeEvent } from "react";
-import { Choice } from "../../types/t.question";
+import CreatedOption from "./CreatedOption";
+import ToastAlert from "./ToastAlert";
+import { Option } from "../../types/t.question";
 import { motion } from "framer-motion";
 import { toast } from "react-hot-toast";
 import { v4 as uuid } from "uuid";
+import {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  ChangeEvent,
+  FC,
+} from "react";
 
 interface Props {
   closeDialog: () => void;
   addQuestion: (question: IQuestion) => void;
 }
 
-const dialog = {
-  initial: {
-    opacity: 0,
-  },
-  animate: {
-    opacity: 1,
-  },
-};
-
-function AddQuestionDialog({ closeDialog, addQuestion }: Props) {
-  const [choices, setChoices] = useState<Choice[]>([]);
-  const [inputChoice, setInputChoice] = useState<string>("");
+const AddQuestionDialog: FC<Props> = ({ closeDialog, addQuestion }: Props) => {
+  const [options, setOptions] = useState<Option[]>([]);
+  const [inputOption, setInputOption] = useState<string>("");
   const [inputQuestion, setInputQuestion] = useState<string>("");
   const questionRef = useRef<HTMLTextAreaElement | null>(null);
-  const choicesContainerRef = useRef<HTMLDivElement | null>(null);
+  const optionsContainerRef = useRef<HTMLDivElement | null>(null);
 
   const addNewOption = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputChoice) return;
+    if (!inputOption) return;
 
-    if (choices.length >= 10)
-      return toast.error("Choices exceed the maximum limit");
+    if (options.length >= 10) {
+      return toast(<ToastAlert message="Options exceed the maximum limit" />);
+    }
 
-    const newChoice = inputChoice.trim();
-    const isChoiceExist = choices.find((choice) => choice.label === newChoice);
+    const newOption = inputOption.trim();
+    const isOptionExist = options.find((option) => option.label === newOption);
 
-    if (!isChoiceExist) {
-      setChoices([...choices, { label: newChoice, isRightAnswer: false }]);
-      setInputChoice("");
-
+    if (!isOptionExist) {
+      setOptions([...options, { label: newOption, isRightAnswer: false }]);
+      setInputOption("");
       setTimeout(() => {
-        choicesContainerRef.current!.scrollTo(
+        optionsContainerRef.current!.scrollTo(
           0,
-          choicesContainerRef.current!.scrollHeight,
+          optionsContainerRef.current!.scrollHeight,
         );
       }, 10);
     } else {
-      toast.error("Choice already exist. Please enter a new one");
+      toast(
+        <ToastAlert message="Option already exist. Please try another one" />,
+      );
     }
   };
 
-  const handleUpdate = (label: string): void => {
-    setChoices((prev) =>
-      prev.map((choice) => {
-        if (choice.label === label) {
-          return { ...choice, isRightAnswer: !choice.isRightAnswer };
+  const handleUpdate = useCallback((label: string) => {
+    setOptions((prev) =>
+      prev.map((option) => {
+        if (option.label === label) {
+          return { ...option, isRightAnswer: !option.isRightAnswer };
         } else {
-          return { ...choice, isRightAnswer: false };
+          return { ...option, isRightAnswer: false };
         }
       }),
     );
-  };
+  }, []);
 
-  const handleDelete = (label: string): void => {
-    setChoices((prev) => prev.filter((choice) => choice.label !== label));
-  };
+  const handleDelete = useCallback((label: string) => {
+    setOptions((prev) => prev.filter((option) => option.label !== label));
+  }, []);
 
   const handleAddQuestion = () => {
-    if (!inputQuestion || choices.length === 0) {
-      toast.error(
-        "You need to provide a question and choices before you proceed",
+    if (!inputQuestion || options.length === 0) {
+      toast(
+        <ToastAlert message="Please provide a question and options before you proceed" />,
       );
-    } else if (!choices.find((choice) => choice.isRightAnswer)) {
-      toast.error("Please specify the correct answer for this question");
+    } else if (!options.find((option) => option.isRightAnswer)) {
+      toast(
+        <ToastAlert message=" Please specify the correct answer for this question." />,
+      );
     } else {
       addQuestion({
         questionId: uuid(),
         question: inputQuestion,
-        choices,
+        options,
       });
+      questionRef.current?.focus();
       setInputQuestion("");
-      setChoices([]);
+      setOptions([]);
     }
   };
 
@@ -96,16 +100,15 @@ function AddQuestionDialog({ closeDialog, addQuestion }: Props) {
 
   return (
     <motion.div
-      variants={dialog}
-      initial="initial"
-      animate="animate"
-      exit="initial"
-      transition={{ delay: 0.15 }}
-      className="fixed inset-0 z-20 flex items-center justify-center bg-black/40 text-cs-dark"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ delay: 0.01 }}
+      className="fixed inset-0 z-20 flex items-center justify-center bg-black/60 text-cs-dark"
     >
       <div className="flex max-w-[500px] flex-1 flex-col gap-y-4 rounded-md bg-white p-6 shadow-md">
         <div className="flex items-center gap-x-3 border-b pb-4">
-          <h2 className="text-lg font-extrabold uppercase">Add new question</h2>
+          <h2 className="text-lg font-extrabold uppercase">Add Question</h2>
         </div>
         <div className="flex flex-col gap-y-3">
           <div className="flex flex-col gap-y-1 ">
@@ -116,11 +119,11 @@ function AddQuestionDialog({ closeDialog, addQuestion }: Props) {
               Question
             </label>
             <textarea
-              ref={questionRef}
               id="question"
+              ref={questionRef}
               cols={20}
               rows={5}
-              className="resize-none rounded-md border border-cs-dark p-3 text-sm text-cs-dark outline-none"
+              className="resize-none rounded-md border border-gray-300 p-3 text-sm text-cs-dark outline-none focus:border-cs-dark"
               value={inputQuestion}
               onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                 setInputQuestion(e.target.value)
@@ -130,55 +133,55 @@ function AddQuestionDialog({ closeDialog, addQuestion }: Props) {
           <form onSubmit={addNewOption} className="flex gap-x-3">
             <input
               type="text"
-              placeholder="Enter choices..."
-              value={inputChoice}
+              placeholder="Enter option..."
+              value={inputOption}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                setInputChoice(e.target.value)
+                setInputOption(e.target.value)
               }
-              className="w-0 flex-1 rounded-md border border-cs-dark px-3 text-sm outline-none placeholder:font-roboto placeholder:text-sm"
+              className="w-0 flex-1 rounded-md border border-gray-300 px-3 text-sm outline-none placeholder:font-roboto placeholder:text-sm focus:border-cs-dark"
             />
             <button
               type="submit"
-              disabled={inputChoice === ""}
-              className="rounded-md bg-cs-dark px-3 py-3 text-xs font-bold text-white duration-150 hover:bg-cs-dark/90 active:bg-cs-dark/80 disabled:bg-gray-400"
+              disabled={inputOption === ""}
+              className="rounded-md bg-cs-dark px-3 py-3 text-xs font-bold text-white duration-150 hover:bg-cs-dark/90 active:bg-cs-dark/80 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-gray-500"
             >
-              Add choice
+              Add option
             </button>
           </form>
           <div
-            className="flex max-h-[200px] flex-col gap-y-2 overflow-y-auto scroll-smooth"
-            ref={choicesContainerRef}
+            className="flex max-h-[400px] flex-col gap-y-2 overflow-y-auto scroll-smooth"
+            ref={optionsContainerRef}
           >
-            {choices.map((choice, i) => (
-              <CreatedChoice
-                key={choice.label}
-                choiceNumber={i + 1}
-                label={choice.label}
-                isRightAnswer={choice.isRightAnswer}
-                handleUpdate={() => handleUpdate(choice.label)}
-                handleDelete={() => handleDelete(choice.label)}
+            {options.map((option, i) => (
+              <CreatedOption
+                key={option.label}
+                optionNumber={i + 1}
+                label={option.label}
+                isRightAnswer={option.isRightAnswer}
+                handleUpdate={() => handleUpdate(option.label)}
+                handleDelete={() => handleDelete(option.label)}
               />
             ))}
           </div>
           <div className="flex items-center justify-end gap-x-2 border-t pt-4">
             <button
               onClick={closeDialog}
-              className="rounded-md bg-gray-200 px-3 py-2 text-sm text-cs-dark"
+              className="rounded-md bg-gray-200 px-3 py-2 text-sm text-cs-dark duration-150 hover:bg-gray-300"
             >
               Close
             </button>
             <button
-              className="rounded-md border border-cs-dark bg-white px-3 py-2 text-sm text-cs-dark disabled:border-none disabled:bg-gray-300"
+              className="b rounded-md bg-green-600 px-3 py-2 text-sm text-white duration-150   disabled:cursor-not-allowed disabled:border-none"
               onClick={handleAddQuestion}
-              disabled={inputQuestion === "" || choices.length === 0}
+              disabled={inputQuestion === "" || options.length === 0}
             >
-              Add question
+              Create
             </button>
           </div>
         </div>
       </div>
     </motion.div>
   );
-}
+};
 
 export default AddQuestionDialog;

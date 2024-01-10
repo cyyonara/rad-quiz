@@ -1,12 +1,13 @@
 import IQuestion from "../../types/t.question";
 import Question from "./Question";
 import { AnimatePresence } from "framer-motion";
+import { memo, FC } from "react";
 
 interface Props {
   questions: IQuestion[];
 }
 
-function QuestionList({ questions }: Props) {
+const QuestionList: FC<Props> = ({ questions }: Props) => {
   return (
     <div className="flex flex-col gap-y-8">
       <div className="border-b border-gray-300 py-4 font-bold text-cs-dark">
@@ -14,18 +15,18 @@ function QuestionList({ questions }: Props) {
       </div>
       <div className="flex flex-col gap-y-5">
         <AnimatePresence>
-          {questions.map(({ questionId, question, choices }) => (
+          {questions.map(({ questionId, question, options }) => (
             <Question
               key={questionId}
               questionId={questionId}
               question={question}
-              choices={choices}
+              options={options}
             />
           ))}
         </AnimatePresence>
       </div>
     </div>
   );
-}
+};
 
-export default QuestionList;
+export default memo(QuestionList);

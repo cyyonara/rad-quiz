@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import A_Error from "../../types/t.axios_error";
 import UserCredentials from "../../types/t.auth.credentials";
-import { useState, FormEvent, ChangeEvent } from "react";
+import { useState, FormEvent, ChangeEvent, FC } from "react";
 import { Link } from "react-router-dom";
 
 interface LoginFormData {
@@ -13,7 +13,7 @@ interface LoginFormData {
 
 const formInitialState: LoginFormData = { username: "", password: "" };
 
-export default function LoginForm() {
+const LoginForm: FC = () => {
   const [loginForm, setLoginForm] = useState<LoginFormData>(formInitialState);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const { setCredentials } = useAuth();
@@ -80,4 +80,6 @@ export default function LoginForm() {
       </span>
     </form>
   );
-}
+};
+
+export default LoginForm;

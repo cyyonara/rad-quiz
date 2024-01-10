@@ -4,8 +4,9 @@ import DropdownNav from "./DropdownNav";
 import useAuth from "../../store/useAuth";
 import useAvatarDropdown from "../../store/useAvatarDropdown";
 import { IoIosArrowDown } from "react-icons/io";
+import { FC } from "react";
 
-export default function AvatarDropDownContainer() {
+const AvatarDropDownContainer: FC = () => {
   const { auth } = useAuth();
   const { showDropdown, toggleAvatarDropdown } = useAvatarDropdown();
 
@@ -40,4 +41,6 @@ export default function AvatarDropDownContainer() {
       {showDropdown && <DropdownNav />}
     </div>
   );
-}
+};
+
+export default AvatarDropDownContainer;

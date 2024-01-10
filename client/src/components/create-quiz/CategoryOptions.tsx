@@ -1,6 +1,7 @@
 import useCategories from "../../hooks/useCategories";
+import { memo, FC } from "react";
 
-export default function CategoryOptions() {
+const CategoryOptions: FC = () => {
   const { data: categories, isSuccess } = useCategories();
 
   return (
@@ -13,4 +14,6 @@ export default function CategoryOptions() {
         ))}
     </>
   );
-}
+};
+
+export default memo(CategoryOptions);

@@ -10,7 +10,9 @@ const useAvatarDropdown = create<AvatarDropdownState>()((set) => ({
   showDropdown: false,
   toggleAvatarDropdown: () =>
     set((state) => ({ showDropdown: !state.showDropdown })),
-  closeDropdown: () => set({ showDropdown: false }),
+  closeDropdown: () => {
+    set({ showDropdown: false });
+  },
 }));
 
 export default useAvatarDropdown;

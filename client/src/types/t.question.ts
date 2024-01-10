@@ -1,4 +1,4 @@
-export interface Choice {
+export interface Option {
   label: string;
   isRightAnswer: boolean;
 }
@@ -6,5 +6,5 @@ export interface Choice {
 export default interface IQuestion {
   questionId: string;
   question: string;
-  choices: Choice[];
+  options: Array<Option>;
 }

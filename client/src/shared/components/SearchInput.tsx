@@ -1,6 +1,7 @@
+import { FC } from "react";
 import { CiSearch } from "react-icons/ci";
 
-export default function SearchInput() {
+const SearchInput: FC = () => {
   return (
     <div className="relative flex max-w-[600px] flex-1 items-center border border-slate-300 px-4">
       <CiSearch className="text-gray-600" />
@@ -11,4 +12,6 @@ export default function SearchInput() {
       />
     </div>
   );
-}
+};
+
+export default SearchInput;

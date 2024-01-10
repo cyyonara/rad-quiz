@@ -13,6 +13,11 @@ const signup = handler(async (req: Request, res: Response): Promise<void> => {
     throw new Error("Username and password fields shall not be empty.");
   }
 
+  if (password.split("").length < 8) {
+    res.status(400);
+    throw new Error("Please create a stronger password");
+  }
+
   const user = new User({
     username: username.trim(),
     password: password.trim(),

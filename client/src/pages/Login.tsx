@@ -1,10 +1,10 @@
 import LoginForm from "../components/login/LoginForm";
 import useAuth from "../store/useAuth";
-import { useEffect } from "react";
+import { useEffect, FC } from "react";
 import { Navigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
-export default function Login() {
+const Login: FC = () => {
   const { auth } = useAuth();
 
   useEffect(() => {
@@ -17,7 +17,7 @@ export default function Login() {
     <motion.main className="flex min-h-[86vh] px-6 py-14 text-cs-dark sm:px-[clamp(5rem,8vw,300px)]">
       <section className="m-auto flex max-w-[1300px] flex-1 flex-col gap-x-[100px] gap-y-12 lg:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-y-4">
-          <h1 className="logo-animated relative max-w-min text-nowrap text-5xl font-[900] text-white md:text-7xl">
+          <h1 className="logo-animated relative max-w-min whitespace-nowrap text-5xl font-[900] text-white md:text-7xl">
             RAD QUIZ.
           </h1>
           <p className="text-sm">
@@ -39,4 +39,6 @@ export default function Login() {
       </section>
     </motion.main>
   );
-}
+};
+
+export default Login;

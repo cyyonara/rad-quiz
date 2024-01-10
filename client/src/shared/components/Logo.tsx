@@ -1,3 +1,4 @@
+import { FC } from "react";
 import { SiGitbook } from "react-icons/si";
 import { Link } from "react-router-dom";
 
@@ -5,7 +6,7 @@ interface Props {
   path: string;
 }
 
-export default function Logo({ path }: Props) {
+const Logo: FC<Props> = ({ path }: Props) => {
   return (
     <Link
       to={path}
@@ -15,4 +16,6 @@ export default function Logo({ path }: Props) {
       <h2>Rad Quiz.</h2>
     </Link>
   );
-}
+};
+
+export default Logo;

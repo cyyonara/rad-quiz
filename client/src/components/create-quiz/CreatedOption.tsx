@@ -1,26 +1,27 @@
 import clsx from "clsx";
 import { FaCheck } from "react-icons/fa6";
 import { MdDelete, MdClose } from "react-icons/md";
+import { memo, FC } from "react";
 
 interface Props {
-  choiceNumber: number;
+  optionNumber: number;
   label: string;
   isRightAnswer: boolean;
   handleUpdate: () => void;
   handleDelete: () => void;
 }
 
-function CreatedChoice({
-  choiceNumber,
+const CreatedOption: FC<Props> = ({
+  optionNumber,
   label,
   isRightAnswer,
   handleUpdate,
   handleDelete,
-}: Props) {
+}: Props) => {
   return (
     <div
-      className={clsx("flex flex-col gap-y-1 rounded-md border bg-white p-2", {
-        "border-green-600 bg-green-200/20": isRightAnswer,
+      className={clsx("flex flex-col gap-y-1 rounded-md border p-2", {
+        "border-green-600 bg-green-100/30": isRightAnswer,
       })}
     >
       <div
@@ -29,26 +30,24 @@ function CreatedChoice({
         })}
       >
         <span
-          className={clsx("text-sm font-bold text-cs-dark", {
+          className={clsx("text-sm text-cs-dark", {
             "text-green-600": isRightAnswer,
           })}
         >
-          Option #{choiceNumber}
+          Option #{optionNumber}
         </span>
         <div className="flex items-center gap-x-2">
           <button onClick={handleUpdate} className="text-green-600">
             {isRightAnswer ? <MdClose className="text-red-600" /> : <FaCheck />}
           </button>
           <button onClick={handleDelete} className="text-cs-dark">
-            <MdDelete
-              className={clsx("text-lg", { "text-green-600": isRightAnswer })}
-            />
+            <MdDelete className="text-lg" />
           </button>
         </div>
       </div>
       <p
         className={clsx(
-          "overflow-x-hidden text-ellipsis py-3 text-sm text-cs-dark",
+          "overflow-x-hidden text-ellipsis py-1 text-sm text-cs-dark",
           {
             "text-green-700": isRightAnswer,
           },
@@ -58,6 +57,6 @@ function CreatedChoice({
       </p>
     </div>
   );
-}
+};
 
-export default CreatedChoice;
+export default memo(CreatedOption);

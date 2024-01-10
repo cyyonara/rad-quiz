@@ -3,10 +3,11 @@ import SignUp from "./pages/Signup";
 import Home from "./pages/Home";
 import RootLayout from "./shared/layouts/RootLayout";
 import AuthLayout from "./shared/layouts/AuthLayout";
-import { Routes, Route } from "react-router-dom";
 import CreateQuiz from "./pages/CreateQuiz";
+import { Routes, Route } from "react-router-dom";
+import { FC } from "react";
 
-export default function App() {
+const App: FC = () => {
   return (
     <Routes>
       <Route element={<AuthLayout />}>
@@ -19,4 +20,6 @@ export default function App() {
       </Route>
     </Routes>
   );
-}
+};
+
+export default App;

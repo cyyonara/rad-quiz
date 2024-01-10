@@ -1,8 +1,9 @@
 import AuthHeader from "../components/AuthHeader";
 import Footer from "../components/Footer";
 import { Outlet } from "react-router-dom";
+import { FC } from "react";
 
-export default function AuthLayout() {
+const AuthLayout: FC = () => {
   return (
     <>
       <AuthHeader />
@@ -10,4 +11,6 @@ export default function AuthLayout() {
       <Footer />
     </>
   );
-}
+};
+
+export default AuthLayout;
