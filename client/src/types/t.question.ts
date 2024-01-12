@@ -4,7 +4,7 @@ export interface Option {
 }
 
 export default interface IQuestion {
-  questionId: string;
+  questionId?: string;
   question: string;
   options: Array<Option>;
 }

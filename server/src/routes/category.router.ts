@@ -1,6 +1,6 @@
 import protect from "../middlewares/protect";
 import express, { IRouter } from "express";
-import { getCategories } from "../controllers/categoryController";
+import { getCategories } from "../controllers/category.controller";
 
 const router: IRouter = express.Router();
 

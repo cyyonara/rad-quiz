@@ -11,6 +11,7 @@ import {
   ChangeEvent,
   FC,
   FormEvent,
+  useCallback,
 } from "react";
 import { QuestionContext } from "./QuizSetup";
 import { motion } from "framer-motion";
@@ -30,6 +31,7 @@ const EditQuestionModal: FC<Props> = ({
   const [updatedQuestion, setUpdatedQuestion] = useState<string>(question);
   const [updatedOptions, setUpdatedOptions] = useState<Option[]>(options);
   const [inputOption, setNewInputOption] = useState<string>("");
+  const { updateQuestion } = useContext(QuestionContext);
   const optionsContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -68,12 +70,39 @@ const EditQuestionModal: FC<Props> = ({
     }
   };
 
-  const handleUpdate = (label: string) => {};
+  const handleUpdate = useCallback((label: string) => {
+    setUpdatedOptions((state) =>
+      state.map((option) => {
+        if (option.label === label) {
+          return { ...option, isRightAnswer: true };
+        }
+        return { ...option, isRightAnswer: false };
+      }),
+    );
+  }, []);
 
-  const handleDelete = (label: string) => {
+  const handleDelete = useCallback((label: string) => {
     setUpdatedOptions((state) =>
       state.filter((option) => option.label !== label),
     );
+  }, []);
+
+  const handleSaveChanges = () => {
+    if (!updatedQuestion || updatedOptions.length === 0) {
+      toast(<ToastAlert message="Please provide a question and options" />);
+    } else if (!updatedOptions.find((option) => option.isRightAnswer)) {
+      toast(
+        <ToastAlert message=" Please specify the correct answer for this question." />,
+      );
+    } else {
+      updateQuestion({
+        questionId,
+        question: updatedQuestion,
+        options: updatedOptions,
+      });
+      toast.success("Changes applied");
+      toggleModal();
+    }
   };
 
   return (
@@ -82,7 +111,7 @@ const EditQuestionModal: FC<Props> = ({
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ delay: 0.01 }}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 px-[clamp(3rem,10vh,300px)] shadow-lg"
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 p-4 px-[clamp(3rem,10vh,300px)] shadow-lg"
     >
       <div className="flex max-w-[450px] flex-1 flex-col rounded-md bg-white p-4 shadow-lg">
         <div className="flex flex-col gap-y-4">
@@ -116,7 +145,7 @@ const EditQuestionModal: FC<Props> = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setNewInputOption(e.target.value)
                 }
-                className="w-0 flex-1 rounded-md border border-gray-300 px-3 text-sm outline-none placeholder:font-roboto placeholder:text-sm focus:border-cs-dark"
+                className="placeholder:font-roboto w-0 flex-1 rounded-md border border-gray-300 px-3 text-sm outline-none placeholder:text-sm focus:border-cs-dark"
               />
               <button
                 type="submit"
@@ -128,7 +157,7 @@ const EditQuestionModal: FC<Props> = ({
             </form>
             <div
               ref={optionsContainerRef}
-              className="flex max-h-[400px] flex-col gap-y-2 overflow-y-auto overflow-x-scroll scroll-smooth"
+              className="flex max-h-[400px] flex-col gap-y-2 overflow-y-auto scroll-smooth"
             >
               {updatedOptions.map((option, index) => (
                 <CreatedOption
@@ -136,8 +165,8 @@ const EditQuestionModal: FC<Props> = ({
                   label={option.label}
                   optionNumber={index + 1}
                   isRightAnswer={option.isRightAnswer}
-                  handleDelete={() => handleDelete(option.label)}
-                  handleUpdate={() => handleUpdate(option.label)}
+                  handleDelete={handleDelete}
+                  handleUpdate={handleUpdate}
                 />
               ))}
             </div>
@@ -148,7 +177,11 @@ const EditQuestionModal: FC<Props> = ({
               >
                 Close
               </button>
-              <button className="b rounded-md bg-green-600 px-3 py-2 text-sm text-white duration-150   disabled:cursor-not-allowed disabled:border-none disabled:bg-green-600/90">
+              <button
+                onClick={handleSaveChanges}
+                disabled={updatedOptions.length === 0 || updatedQuestion === ""}
+                className="rounded-md bg-green-600 px-3 py-2 text-sm text-white duration-150 hover:bg-green-500   disabled:cursor-not-allowed disabled:border-none disabled:bg-green-600/90"
+              >
                 Save changes
               </button>
             </div>

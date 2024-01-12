@@ -58,9 +58,8 @@ const AddQuestionDialog: FC<Props> = ({ closeDialog, addQuestion }: Props) => {
       prev.map((option) => {
         if (option.label === label) {
           return { ...option, isRightAnswer: !option.isRightAnswer };
-        } else {
-          return { ...option, isRightAnswer: false };
         }
+        return { ...option, isRightAnswer: false };
       }),
     );
   }, []);
@@ -71,12 +70,10 @@ const AddQuestionDialog: FC<Props> = ({ closeDialog, addQuestion }: Props) => {
 
   const handleAddQuestion = () => {
     if (!inputQuestion || options.length === 0) {
-      toast(
-        <ToastAlert message="Please provide a question and options before you proceed" />,
-      );
+      toast(<ToastAlert message="Please provide a question and options" />);
     } else if (!options.find((option) => option.isRightAnswer)) {
       toast(
-        <ToastAlert message=" Please specify the correct answer for this question." />,
+        <ToastAlert message=" Please specify the correct answer for this question" />,
       );
     } else {
       addQuestion({
@@ -158,8 +155,8 @@ const AddQuestionDialog: FC<Props> = ({ closeDialog, addQuestion }: Props) => {
                 optionNumber={i + 1}
                 label={option.label}
                 isRightAnswer={option.isRightAnswer}
-                handleUpdate={() => handleUpdate(option.label)}
-                handleDelete={() => handleDelete(option.label)}
+                handleUpdate={handleUpdate}
+                handleDelete={handleDelete}
               />
             ))}
           </div>

@@ -20,7 +20,7 @@ const Option: FC<Props> = ({
   const handleDelete = () => deleteOptions(questionId, label);
 
   return (
-    <div className="flex items-center justify-between gap-x-4">
+    <div className="flex items-center justify-between gap-x-4 overflow-hidden text-ellipsis break-words">
       <label
         key={label}
         className="flex w-max cursor-pointer items-center gap-x-3"
@@ -42,8 +42,8 @@ const Option: FC<Props> = ({
           )}
         </div>
         <span
-          className={clsx("italic text-gray-500", {
-            "font-bold text-cs-dark": isRightAnswer,
+          className={clsx("max-w-full text-sm text-gray-500", {
+            "text-cs-dark": isRightAnswer,
           })}
         >
           {label}

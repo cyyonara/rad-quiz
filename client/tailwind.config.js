@@ -8,7 +8,7 @@ export default {
         "cs-dark": "#161A30",
       },
       fontFamily: {
-        roboto: "Roboto",
+        tektur: ["Tektur", "system-ui"],
       },
     },
   },

@@ -1,5 +1,5 @@
 import IRequest from "../types/t.request";
-import Category from "../models/Category";
+import Category from "../models/categoryModel";
 import handler from "express-async-handler";
 import { Response } from "express";
 

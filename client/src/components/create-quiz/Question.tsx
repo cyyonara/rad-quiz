@@ -4,6 +4,7 @@ import QuestionAction from "./QuestionAction";
 import EditQuestionModal from "./EditQuestionModal";
 import { SlOptionsVertical } from "react-icons/sl";
 import { QuestionContext } from "./QuizSetup";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   memo,
   useContext,
@@ -11,8 +12,8 @@ import {
   useCallback,
   ChangeEvent,
   FC,
+  SyntheticEvent,
 } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 
 interface Props extends IQuestion {}
 
@@ -21,11 +22,12 @@ const Question: FC<Props> = ({ questionId, question, options }: Props) => {
   const [showEditModal, setShowEditModal] = useState<boolean>(false);
   const [showActions, setShowActions] = useState<boolean>(false);
 
-  const handleUpdate = useCallback((e: ChangeEvent<HTMLInputElement>) => {
-    if (e.target.checked) {
-      updateCorrectAnswer(questionId, e.target.value);
-    }
-  }, []);
+  const handleUpdate = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) =>
+      e.target.checked &&
+      updateCorrectAnswer(questionId as string, e.target.value),
+    [],
+  );
 
   const openActions = () => setShowActions(true);
   const closeActions = () => setShowActions(false);
@@ -37,7 +39,7 @@ const Question: FC<Props> = ({ questionId, question, options }: Props) => {
         key={questionId}
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0, opacity: 0 }}
+        exit={{ x: 200, opacity: 0 }}
         transition={{ duration: 0.4 }}
         onClick={closeActions}
         className="flex max-w-[810px] flex-1 flex-col gap-y-6 rounded-md p-3 text-cs-dark shadow-[0_0_4px_rgba(0,0,0,0.3)]"
@@ -54,9 +56,11 @@ const Question: FC<Props> = ({ questionId, question, options }: Props) => {
           )}
         </AnimatePresence>
         <div className="flex items-start justify-between">
-          <p className="w-full break-words font-medium">{question}</p>
+          <p className="w-full overflow-x-hidden text-ellipsis font-medium">
+            {question}
+          </p>
           <div
-            onClick={(e) => {
+            onClick={(e: SyntheticEvent) => {
               e.stopPropagation();
               openActions();
             }}
@@ -67,7 +71,7 @@ const Question: FC<Props> = ({ questionId, question, options }: Props) => {
               {showActions && (
                 <QuestionAction
                   toggleModal={toggleModal}
-                  deleteQuestion={() => deleteQuestion(questionId)}
+                  deleteQuestion={() => deleteQuestion(questionId as string)}
                 />
               )}
             </AnimatePresence>
@@ -78,7 +82,7 @@ const Question: FC<Props> = ({ questionId, question, options }: Props) => {
             <Option
               key={label}
               label={label}
-              questionId={questionId}
+              questionId={questionId as string}
               isRightAnswer={isRightAnswer}
               handleUpdate={handleUpdate}
             />

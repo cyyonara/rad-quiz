@@ -7,8 +7,8 @@ interface Props {
   optionNumber: number;
   label: string;
   isRightAnswer: boolean;
-  handleUpdate: () => void;
-  handleDelete: () => void;
+  handleUpdate: (label: string) => void;
+  handleDelete: (label: string) => void;
 }
 
 const CreatedOption: FC<Props> = ({
@@ -30,24 +30,27 @@ const CreatedOption: FC<Props> = ({
         })}
       >
         <span
-          className={clsx("text-sm text-cs-dark", {
+          className={clsx("text-sm font-medium text-cs-dark", {
             "text-green-600": isRightAnswer,
           })}
         >
           Option #{optionNumber}
         </span>
         <div className="flex items-center gap-x-2">
-          <button onClick={handleUpdate} className="text-green-600">
+          <button
+            onClick={() => handleUpdate(label)}
+            className="text-green-600"
+          >
             {isRightAnswer ? <MdClose className="text-red-600" /> : <FaCheck />}
           </button>
-          <button onClick={handleDelete} className="text-cs-dark">
+          <button onClick={() => handleDelete(label)} className="text-cs-dark">
             <MdDelete className="text-lg" />
           </button>
         </div>
       </div>
       <p
         className={clsx(
-          "overflow-x-hidden text-ellipsis py-1 text-sm text-cs-dark",
+          "overflow-x-hidden text-ellipsis py-1 text-xs text-cs-dark",
           {
             "text-green-700": isRightAnswer,
           },

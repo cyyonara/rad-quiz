@@ -8,7 +8,7 @@ const CategoryOptions: FC = () => {
     <>
       {isSuccess &&
         categories.map(({ _id, categoryName }) => (
-          <option key={_id} value={_id}>
+          <option key={_id} value={categoryName}>
             {categoryName}
           </option>
         ))}

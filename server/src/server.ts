@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import dbConnect from "./config/db.connect";
 import authRouter from "./routes/auth.router";
 import categoryRouter from "./routes/category.router";
+import quizRouter from "./routes/quiz.router";
 import morgan from "morgan";
 import express, { Application } from "express";
 import { errorCatcher, notFound } from "./middlewares/error.handler";
@@ -23,6 +24,7 @@ app.use(cookieParser());
 
 app.use("/api/auth", authRouter);
 app.use("/api/categories", categoryRouter);
+app.use("/api/quiz", quizRouter);
 
 app.use(notFound);
 app.use(errorCatcher);

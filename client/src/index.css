@@ -7,7 +7,7 @@
 }
 
 body {
-  @apply scroll-smooth break-words font-roboto;
+  @apply font-tektur scroll-smooth break-words;
 }
 
 .logo-animated {
@@ -25,7 +25,7 @@ body {
   height: 100%;
   overflow: hidden;
   animation: logo-flow 6s linear infinite;
-  @apply whitespace-nowrap border-r-[4px] border-cs-dark font-roboto uppercase text-cs-dark;
+  @apply whitespace-nowrap border-r-[4px] border-cs-dark uppercase text-cs-dark;
 }
 
 .login-header .active {

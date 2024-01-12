@@ -14,7 +14,7 @@ const CreateQuiz: FC = () => {
       onClick={closeDropdown}
       className="flex flex-1 items-start bg-slate-100 px-5"
     >
-      <section className="mx-auto my-8 flex max-w-[1150px] flex-1 flex-col gap-y-7 rounded-lg bg-white px-8 pb-[150px] pt-8 shadow-md">
+      <section className="mx-auto my-8 flex max-w-[1150px] flex-1 flex-col gap-y-7 rounded-lg bg-white px-8 pb-[80px] pt-8 shadow-md">
         <QuizSetup />
       </section>
     </main>

@@ -7,6 +7,7 @@ interface Props {
   title: string;
   description: string;
   category: string;
+  isUploading: boolean;
   handleChangeDetails: (e: TQuizFormEvent) => void;
 }
 
@@ -14,6 +15,7 @@ const QuizDetailsForm: FC<Props> = ({
   title,
   description,
   category,
+  isUploading,
   handleChangeDetails,
 }: Props) => {
   const titleRef = useRef<HTMLInputElement | null>(null);
@@ -36,6 +38,7 @@ const QuizDetailsForm: FC<Props> = ({
             type="text"
             id="title"
             ref={titleRef}
+            disabled={isUploading}
             value={title}
             onChange={handleChangeDetails}
             className="rounded-md border border-gray-300 px-4 py-3 text-sm text-cs-dark outline-none focus:border-cs-dark"
@@ -52,6 +55,7 @@ const QuizDetailsForm: FC<Props> = ({
             id="description"
             cols={30}
             rows={8}
+            disabled={isUploading}
             value={description}
             onChange={handleChangeDetails}
             className="resize-none rounded-md border border-gray-300 px-4 py-3 text-sm text-cs-dark outline-none focus:border-cs-dark"
@@ -71,6 +75,7 @@ const QuizDetailsForm: FC<Props> = ({
               id="category"
               value={category}
               onChange={handleChangeDetails}
+              disabled={isUploading}
               className="w-full cursor-pointer appearance-none rounded-md border border-gray-300 p-3 text-sm text-cs-dark outline-none focus:border-cs-dark"
             >
               <option value="">-- Select category --</option>

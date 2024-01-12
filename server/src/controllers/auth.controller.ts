@@ -1,4 +1,4 @@
-import User from "../models/User";
+import User from "../models/userModel";
 import handler from "express-async-handler";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";

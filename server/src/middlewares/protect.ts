@@ -1,4 +1,4 @@
-import User from "../models/User";
+import User from "../models/userModel";
 import IRequest from "../types/t.request";
 import jwt, { JsonWebTokenError, JwtPayload, TokenExpiredError } from "jsonwebtoken";
 import { Response, NextFunction } from "express";
@@ -11,10 +11,7 @@ interface UserPayload extends JwtPayload {
 const protect = async (req: IRequest, res: Response, next: NextFunction): Promise<void> => {
   if (req.cookies.radquiz_auth) {
     try {
-      const payload = jwt.verify(
-        req.cookies.radquiz_auth,
-        process.env.JWT_KEY_SECRET as string
-      ) as UserPayload;
+      const payload = jwt.verify(req.cookies.radquiz_auth, process.env.JWT_KEY_SECRET as string) as UserPayload;
       const user: IRequest["user"] = await User.findById(payload._id).select("-password");
       if (!user) throw new Error("Invalid Token");
       req.user = user;
